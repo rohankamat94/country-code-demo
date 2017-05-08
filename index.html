@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Country Test</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script>
+	
+	populateDropdown = function(id, data) {
+		const options = data.map(function(data){
+			return '<option value ="' + data.value + '"=>' + data.label + '</option>'; 
+		}).join('');
+
+		document.getElementById(id).innerHTML = options; 
+	};
+
+
+	onCountryChange = function(country){
+		$.ajax({url: 'http://127.0.0.1:8081/countries/' + country + '/states'}).done(function(data){
+			populateDropdown('s', data);
+		});
+	}
+
+
+	fetchAndPopulateCountries = function(){
+		$.ajax({url: 'http://127.0.0.1:8081/countries'}).done(function(data){
+			populateDropdown('c', data);
+			onCountryChange(data[0].value);
+
+		});
+	}
+
+	addCountryChangeListener = function(){
+		document.getElementById('c').addEventListener('change', function(e){
+			onCountryChange(e.target.value);
+		});
+	}
+
+
+	/* 
+	 *
+	 *
+	 *	EXECUTION BEGINS HERE
+	 *
+	 */
+	window.onload = function(){
+		fetchAndPopulateCountries();
+		addCountryChangeListener();
+		
+	}
+	</script>
+
+
+</head>
+<body>
+<select id="c"></select>
+<select id="s"></select>
+</body>
+</html>
